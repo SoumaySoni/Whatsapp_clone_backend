@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { Server as SocketIOServer } from "socket.io";
 import prisma from "./prisma";
 import authRoutes from "./routes/authRoutes";
+import { authMiddleware } from "./middleware/authMiddleware";
 
 dotenv.config();
 
@@ -23,6 +24,10 @@ app.use("/api/auth", authRoutes);
 // Test route
 app.get("/", (req: Request, res: Response) => {
     res.json({ message: "WhatsApp backend server running..." });
+});
+
+app.get("/protected", authMiddleware, (req, res) => {
+    res.json({ message: "Access granted" });
 });
 
 // HTTP server + Socket.IO
