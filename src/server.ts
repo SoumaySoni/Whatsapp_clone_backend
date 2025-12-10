@@ -3,6 +3,7 @@ import http from "http";
 import cors from "cors";
 import dotenv from "dotenv";
 import { Server as SocketIOServer } from "socket.io";
+import prisma from "./prisma";
 
 dotenv.config();
 
@@ -45,3 +46,7 @@ const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+prisma.$connect()
+    .then(() => console.log("Prisma connected to PostgreSQL"))
+    .catch((err) => console.error("Prisma DB connection error:", err));
