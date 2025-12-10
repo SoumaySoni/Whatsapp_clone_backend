@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { Server as SocketIOServer } from "socket.io";
 import prisma from "./prisma";
+import authRoutes from "./routes/authRoutes";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(
         credentials: true,
     })
 );
+app.use("/api/auth", authRoutes);
 
 // Test route
 app.get("/", (req: Request, res: Response) => {
