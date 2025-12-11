@@ -6,6 +6,7 @@ import { Server as SocketIOServer } from "socket.io";
 import prisma from "./prisma";
 import authRoutes from "./routes/authRoutes";
 import { authMiddleware } from "./middleware/authMiddleware";
+import chatRoutes from "./routes/chatRoutes";
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use(
     })
 );
 app.use("/api/auth", authRoutes);
+app.use("/api/chats", chatRoutes);
 
 // Test route
 app.get("/", (req: Request, res: Response) => {
