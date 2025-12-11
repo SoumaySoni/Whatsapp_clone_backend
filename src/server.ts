@@ -7,6 +7,7 @@ import prisma from "./prisma";
 import authRoutes from "./routes/authRoutes";
 import { authMiddleware } from "./middleware/authMiddleware";
 import chatRoutes from "./routes/chatRoutes";
+import messageRoutes from "./routes/messageRoutes";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(
 );
 app.use("/api/auth", authRoutes);
 app.use("/api/chats", chatRoutes);
+app.use("/api/messages", messageRoutes);
 
 // Test route
 app.get("/", (req: Request, res: Response) => {
