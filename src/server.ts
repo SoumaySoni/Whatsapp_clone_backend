@@ -47,6 +47,24 @@ const io = new SocketIOServer(server, {
 io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
+    // Join user room (userId will come from frontend)
+    socket.on("join", (userId: string) => {
+        socket.join(userId);
+        console.log(`User ${userId} joined their room`);
+    });
+
+    // Join specific chat room
+    socket.on("joinChat", (chatId: string) => {
+        socket.join(chatId);
+        console.log(`Socket ${socket.id} joined chat ${chatId}`);
+    });
+
+    // Listen for messages and send to chat room
+    socket.on("sendMessage", (data) => {
+        const { chatId, message } = data;
+        io.to(chatId).emit("receiveMessage", message);
+    });
+
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
     });
