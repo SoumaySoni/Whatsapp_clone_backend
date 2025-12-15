@@ -57,6 +57,7 @@ export const getMessages = async (req: AuthRequest, res: Response) => {
 
         if (!chat) return res.status(404).json({ message: "Chat not found" });
 
+        // Fetch messages instead of creating new ones
         const messages = await prisma.message.findMany({
             where: { chatId },
             orderBy: { createdAt: "asc" },
@@ -71,3 +72,4 @@ export const getMessages = async (req: AuthRequest, res: Response) => {
         return res.status(500).json({ message: "Server error" });
     }
 };
+
