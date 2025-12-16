@@ -4,42 +4,44 @@ import { AuthRequest } from "../middleware/authMiddleware";
 
 // POST /api/messages/send
 export const sendMessage = async (req: AuthRequest, res: Response) => {
-    try {
-        const userId = req.userId;
-        const { chatId, content } = req.body;
+  try {
+    const userId = req.userId;
+    const { chatId, content } = req.body;
 
-        if (!userId) return res.status(401).json({ message: "Unauthorized" });
-        if (!chatId || !content)
-            return res.status(400).json({ message: "chatId and content are required" });
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    if (!chatId || !content)
+      return res.status(400).json({ message: "chatId and content are required" });
 
-        // Check if chat exists
-        const chat = await prisma.chat.findUnique({
-            where: { id: chatId },
-        });
+    // Make sure chat exists
+    const chat = await prisma.chat.findUnique({
+      where: { id: chatId },
+    });
 
-        if (!chat)
-            return res.status(404).json({ message: "Chat not found" });
+    if (!chat) return res.status(404).json({ message: "Chat not found" });
 
-        // Create message
-        const message = await prisma.message.create({
-            data: {
-                content,
-                senderId: userId,
-                chatId,
-            },
-        });
+    // Create message with sender included
+    const message = await prisma.message.create({
+      data: {
+        content,
+        senderId: userId,
+        chatId,
+      },
+      include: {
+        sender: true,  // ← MISSING IN YOUR CODE, REQUIRED
+      },
+    });
 
-        // Update chat timestamp
-        await prisma.chat.update({
-            where: { id: chatId },
-            data: { updatedAt: new Date() },
-        });
+    // Update chat time
+    await prisma.chat.update({
+      where: { id: chatId },
+      data: { updatedAt: new Date() },
+    });
 
-        return res.status(201).json({ message });
-    } catch (error) {
-        console.error("sendMessage error:", error);
-        return res.status(500).json({ message: "Server error" });
-    }
+    return res.status(201).json({ message });
+  } catch (error) {
+    console.error("sendMessage error:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
 };
 
 // GET /api/messages/:chatId
